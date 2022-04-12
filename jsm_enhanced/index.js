@@ -1,4 +1,5 @@
 const cleanup = require('./service.js')
+require('./autoWrap.js');
 
 module.exports = {
   /** @type {jsm_enhanced.Async} */
