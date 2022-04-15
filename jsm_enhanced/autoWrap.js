@@ -1,4 +1,5 @@
-const isFunction = (value) => typeof value === 'function';
+
+const isFunction = (value) => typeof value === 'function' && Java.isJavaObject(value)
 const autoWrapIfFunction = (value) =>
   isFunction(value)
     ? JavaWrapper.methodToJava(value)
