@@ -13,8 +13,3 @@ def parseNBT(nbt):
         c = nbt.asCompoundHelper()
         return {k:parseNBT(c.get(k)) for k in c.getKeys()}
     raise TypeError('Passed argument is not an NBTHelper')
-
-
-nbt = parseNBT(Player.getPlayer().getNBT())
-for attr in nbt['Attributes']:
-    Chat.log(attr['Name'])

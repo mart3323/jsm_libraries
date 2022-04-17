@@ -1,5 +1,3 @@
-from typing import Dict, List
-
 if __name__ == '':
     from JsMacrosAC import *
 
