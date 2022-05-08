@@ -12,7 +12,7 @@ const proxify = (target) => {
       if (isFunction(target[p])) {
         return (...args) => proxify(target[p](...args.map(autoWrapIfFunction)))
       } else {
-        return target[p]
+        return proxify(target[p])
       }
     }
   })
