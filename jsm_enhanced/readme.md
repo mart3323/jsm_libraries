@@ -34,10 +34,10 @@ Chat.log('This will never appear')
 
 ```
 ### Async  
-Promise-based replacements for `Time.sleep` and `Client.waitTick`, allowing the use of true JS concurrency
+Promise-based replacements for `Time.sleep`, `Client.waitTick`, and `JsMacros.waitForEvent` allowing the use of true JS concurrency
 ```ts
 const jsmEnhanced = require('libs/jsm_enhanced/index.js')
-const { waitTick, sleep } = jsmEnhanced.async() 
+const { waitTick, sleep, waitForEvent } = jsmEnhanced.async() 
 
 const fastLoop = async () => {
   const d2d = Hud.createDraw2D();
@@ -57,11 +57,16 @@ const slowLoop = async () => {
     text.y += 5
   }
 }
-const animations = [
-  fastLoop(),
-  slowLoop(),
-  waitTick(5).then(fastLoop),
+
+const main = async () => {
+  fastLoop()
+  slowLoop()
+  waitTick(5).then(fastLoop)
   waitTick(5).then(slowLoop)
-]
-Promise.all(animations).then(jsmEnhanced.stop)
+  Chat.log('Running animations - drop slot 2 to cancel')
+  await waitForEvent('DropSlot', e => e.slot === 2)
+  jsmEnhanced.stop()
+}
+main()
+
 ```
