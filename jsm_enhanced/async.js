@@ -11,7 +11,7 @@ const tickMap = {}
 
 JsMacros.on('Tick', JavaWrapper.methodToJava(() => {
   // Count up by one every tick
-  tickRel += 1; 
+  tickRel += 1;
   // If the current offset has functions to call, call them all
   if (tickMap[tickRel]) {
     tickMap[tickRel].forEach(fn => {
@@ -92,6 +92,18 @@ const sleep = (n) => new Promise(async res => {
   runningSleep = false
 });
 
+const waitForEvent = (eventName, condition) => {
+  if (!condition)
+    return new Promise(res => JsMacros.once(eventName, JavaWrapper.methodToJava(res)))
+
+  return new Promise(res => {
+    const listener = JsMacros.on(eventName, JavaWrapper.methodToJava(e => {
+      if (!condition(e)) return
+      res(e)
+      JsMacros.off(listener)
+    }))
+  })
+}
 
 Client = proxify(Client, {
   waitTick: () => {
@@ -103,8 +115,14 @@ Time = proxify(Time, {
     throw new Error('Time.sleep does not support concurrency - please use the sleep method from async() instead')
   }
 })
+JsMacros = proxify(JsMacros, {
+  waitForEvent: () => {
+    throw new Error('JsMacros.waitForEvent does not support concurrency - please use the waitForEvent methods from async() instead')
+  }
+})
 
 module.exports = {
   waitTick,
-  sleep
+  sleep,
+  waitForEvent
 }
