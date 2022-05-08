@@ -1,7 +1,8 @@
 
-const isFunction = (value) => typeof value === 'function' && Java.isJavaObject(value)
+const isNativeFunction = (value) => (typeof value === 'function') && !Java.isJavaObject(value)
+const isJavaFunction = (value) => (typeof value === 'function') && Java.isJavaObject(value)
 const autoWrapIfFunction = (value) =>
-  isFunction(value)
+  isNativeFunction(value)
     ? JavaWrapper.methodToJava(value)
     : value
 
@@ -9,7 +10,7 @@ const proxify = (target) => {
   if (typeof target !== 'object') return target
   return new Proxy(target, {
     get(target, p) {
-      if (isFunction(target[p])) {
+      if (isJavaFunction(target[p])) {
         return (...args) => proxify(target[p](...args.map(autoWrapIfFunction)))
       } else {
         return proxify(target[p])
