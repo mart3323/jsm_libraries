@@ -39,6 +39,27 @@ attributes = [attr['Name'] for attr in nbt['Attributes']]
 </table>
 
 
+## Geode analyser
+Analyses a geode for building a flying-machine farm - returns info about which crystals are accessible from which axis
+and renders a build guide
+
+![Language: Javascript](https://img.shields.io/badge/Language-Javascript-yellow?logo=javascript&logoColor=yellow)
+```ts
+const { scanGeode } = require('...')
+const geode = scanGeode()
+// Log the yields for each axis / combination of axes
+Object.entries(geode.crystals).forEach(([k,v]) => Chat.log(`${k}: ${v.length} crystals`))
+// Render all the overlays
+geode.render.crystals()
+geode.render.sources()
+geode.render.guides('x')
+geode.render.guides('y', {
+  plane: false, // Optional customization - don't render plane on y axis and use different colors for the markers
+  crystals: { color: 0x00ff00, alpha: 255, fillColor: 0x00ff00, fillAlpha: 255},
+  blocked: { color: 0xff0000, alpha: 255, fillColor: 0xff0000, fillAlpha: 255}
+})
+geode.render.guides('z')
+```
 
 # Scripts that aren't libraries that accidentally ended up in this repo
 
