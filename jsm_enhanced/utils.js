@@ -12,6 +12,11 @@ const proxify = (target, schema) => {
     }
   })
 }
+const isNativeFunction = (value) => (typeof value === 'function') && !Java.isJavaObject(value)
+const isJavaFunction = (value) => (typeof value === 'function') && Java.isJavaObject(value)
+
 module.exports = {
-  proxify
+  proxify,
+  isJavaFunction,
+  isNativeFunction
 }

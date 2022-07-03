@@ -1,6 +1,5 @@
+const {isJavaFunction, isNativeFunction} = require("./utils");
 
-const isNativeFunction = (value) => (typeof value === 'function') && !Java.isJavaObject(value)
-const isJavaFunction = (value) => (typeof value === 'function') && Java.isJavaObject(value)
 const autoWrapIfFunction = (value) =>
   isNativeFunction(value)
     ? JavaWrapper.methodToJava(value)

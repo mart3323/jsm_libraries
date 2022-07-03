@@ -1,6 +1,8 @@
-const {proxify} = require("./utils.js");
-
-unregister = []
+const {isJavaFunction, isNativeFunction, proxify} = require("./utils.js");
+let extra = () => {}
+const unregister = [
+  () => extra(),
+]
 
 // region Auto-unregister for huds
 Hud = proxify(Hud, {
@@ -37,8 +39,32 @@ Chat = proxify(Chat, {
 })
 // endregion
 
+const toNativeFn = (fnOrMethodWrapper) => {
+  if (isNativeFunction(fnOrMethodWrapper)) return fnOrMethodWrapper;
+  if (isJavaFunction(fnOrMethodWrapper)) return () => fnOrMethodWrapper.run();
+  throw new Error(`Value ${fnOrMethodWrapper} is not a function or methodWrapper`)
+}
+
 const cleanup = JavaWrapper.methodToJava(() => {
   unregister.forEach(fn => fn())
 });
 event.stopListener = cleanup
-module.exports = cleanup
+event = new Proxy(event, {
+  get: (target, p, receiver) => {
+    if (p === 'stopListener')
+      return cleanup
+    return target[p]
+  },
+  set: (target, p, value, receiver) => {
+    if (p === 'stopListener') {
+      return Object.assign(target, p, toNativeFn(value))
+    } else {
+      return Object.assign(target, p, value)
+    }
+  }
+});
+const addStopListener = (l) => unregister.push(toNativeFn(l))
+module.exports = {
+  cleanup,
+  addStopListener
+}

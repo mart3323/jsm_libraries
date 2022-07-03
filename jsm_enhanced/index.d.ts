@@ -61,4 +61,11 @@ declare module jsm_enhanced {
    * Chat.log('This will not run')
    */
   type Stop = () => never
+
+  /**
+   * Add a stop listener.
+   * In services, this is similar to assigning to event.stopListener, except subsequent listeners do not overwrite previous ones
+   * In scripts, this only affects cleanup if the script is stopped via {@link Stop}
+   */
+  type addStopListener = (listener: () => void) => void
 }

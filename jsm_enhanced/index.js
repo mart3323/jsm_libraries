@@ -1,4 +1,4 @@
-const cleanup = require('./service.js')
+const { cleanup, addStopListener } = require('./service.js')
 require('./autoWrap.js');
 
 module.exports = {
@@ -17,5 +17,8 @@ module.exports = {
     const ctx = context.getCtx();
     ctx.releaseBoundEventIfPresent()
     ctx.closeContext()
-  }
+  },
+
+  /** @type {jsm_enhanced.addStopListener} */
+  addStopListener,
 }
